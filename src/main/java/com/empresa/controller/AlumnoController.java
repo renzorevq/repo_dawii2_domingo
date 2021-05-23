@@ -1,6 +1,7 @@
 package com.empresa.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -44,12 +45,16 @@ public class AlumnoController {
 	
 	@PutMapping
 	public ResponseEntity<Alumno> actualiza(@RequestBody Alumno obj){
-		Alumno objSalida = service.insertaActualizaAlumno(obj);
-		if(objSalida!=null) {
-			return ResponseEntity.ok(objSalida);
-		}
-		else {
+		Optional<Alumno> optAlumno = service.obtienePorId(obj.getIdAlumno());
+		if (optAlumno.isPresent()) {
+			Alumno objSalida = service.insertaActualizaAlumno(obj);
+			if (objSalida != null) {
+				return ResponseEntity.ok(objSalida);
+			}else {
+				return ResponseEntity.badRequest().build();		
+				}	
+		}else {
 			return ResponseEntity.badRequest().build();
-		}
+		}		
 	}
 }
